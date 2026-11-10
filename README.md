@@ -20,6 +20,7 @@ npm install @gemicore/sdk
 | `gemicore.notifications`, `gemicore.devices`, `gemicore.notificationPreferences` | send, inbox, push devices, per-category switches |
 | `gemicore.email` | bounce and complaint reports, marketing consent, a link to the preference page |
 | `gemicore.config`, `gemicore.flags` | read-only config and feature flags |
+| `gemicore.purchases` | in-app purchases: customers, products, offerings and paywalls, recording and restoring App Store and Play purchases, card checkout, Customer Center, and backend grants and imports |
 | `RealtimeClient` | channels, presence, reconnect |
 | `verifyAccessToken`, `verifyGemicoreSignature` | check a user's access token or a webhook delivery without calling Gemicore |
 
@@ -194,6 +195,7 @@ If one process can load both builds of the package (an ES module app that also p
 
 ## Changes
 
+- 2026-11-10 (0.2.0): `gemicore.purchases` covers the whole purchases API with 21 methods. Four need a secret key (`retrieveCustomer`, `grantEntitlement`, `revokeEntitlement`, `importPurchases`) and the rest need a publishable key and the `customerToken` from `createCustomer`. `RequestAuth` has a `customerToken` field.
 - 2026-10-26: `verifyAccessToken(token, { issuer, appId })` checks an access token offline. `isMfaChallenge(result)` and `oidcErrorFromUrl(url)` are new. `Payment` is now a union you narrow on `provider`: `metadata` is never null, `instructions` and `cryptoProgress` are always present (`null` unless the payment is crypto), and `CheckoutPayment` is `Payment & { statusToken }`. `cryptoProgress` no longer carries `refundTo`, `refundBlocked` or `payers`.
 - 2026-10-25: `GemicoreApiError` has `retryAfter` and `apiDetails`, a 2xx answer with an unreadable body throws a `GemicoreApiError` instead of a `SyntaxError`, and `timeout` is checked in the constructor. `GemicoreErrorCode` lists every public error code. `promoCodes.resolve` takes `{ code, planId }` and returns a `PromoResolveResult`, `subscriptions.cancel` takes only the id, `email.recordConsent` takes a `topic` and requires `wording` to grant, and `notifications.send` takes `userId` or `userIds`, not both. Deliveries carry `deliveredDevices`.
 - 2026-10-03: `gemicore.auth.oidcProviders()`, `gemicore.auth.oidcStartUrl(provider, { redirect, state?, codeChallenge })` and `gemicore.auth.oidcExchange(code, codeVerifier)` sign users in through an external OpenID Connect provider, `createOidcPkce()` makes the PKCE pair between the app page and Gemicore, and `OidcErrorCode` lists the `OIDC_*` error codes.

@@ -29,6 +29,7 @@ import {
   NotificationsClient,
 } from "./notifications.ts";
 import { BalancesClient, PaymentsClient } from "./payments.ts";
+import { PurchasesClient } from "./purchases.ts";
 import { type AppInfo, DEFAULT_TIMEOUT_MS, type GemicoreConfig } from "./types.ts";
 
 /**
@@ -51,6 +52,7 @@ export class Gemicore {
   readonly notifications: NotificationsClient;
   readonly devices: DevicesClient;
   readonly notificationPreferences: NotificationPreferencesClient;
+  readonly purchases: PurchasesClient;
 
   private readonly http: GemicoreHttpClient;
   private readonly settings: GemicoreConfig;
@@ -89,6 +91,7 @@ export class Gemicore {
     this.notifications = new NotificationsClient(this.http);
     this.devices = new DevicesClient(this.http);
     this.notificationPreferences = new NotificationPreferencesClient(this.http);
+    this.purchases = new PurchasesClient(this.http);
   }
 
   /**
@@ -197,6 +200,53 @@ export {
 } from "./oidc.ts";
 export { BalancesClient, PaymentsClient } from "./payments.ts";
 export type { Presence, PresenceEvents, PresenceMember } from "./presence.ts";
+export {
+  type CreateCustomerOptions,
+  type GrantEntitlementInput,
+  type IntroEligibilityInput,
+  type LogInOptions,
+  type OfferingsOptions,
+  type PaywallConfig,
+  type PaywallNode,
+  type PaywallTheme,
+  type PromotionalOfferInput,
+  type PurchaseCancelFeedback,
+  type PurchaseCancelFeedbackInput,
+  type PurchaseCardInput,
+  type PurchaseCardIntent,
+  type PurchaseCheckout,
+  type PurchaseConsumptionConsent,
+  type PurchaseCustomerCenter,
+  type PurchaseCustomerCenterConfig,
+  type PurchaseCustomerInfo,
+  type PurchaseCustomerSession,
+  type PurchaseEntitlement,
+  type PurchaseImportItem,
+  type PurchaseImportItemResult,
+  type PurchaseImportResult,
+  type PurchaseIntroEligibility,
+  type PurchaseOffering,
+  type PurchaseOfferings,
+  type PurchaseOwnership,
+  type PurchasePackage,
+  type PurchasePackageType,
+  type PurchasePaywall,
+  type PurchasePeriodType,
+  type PurchasePlacementResolution,
+  type PurchasePlatform,
+  type PurchaseProduct,
+  type PurchaseProductKind,
+  type PurchaseProductOffer,
+  type PurchasePromotionalOfferSignature,
+  type PurchaseRecord,
+  type PurchaseRecordResult,
+  type PurchaseRestoreResult,
+  type PurchaseStoreName,
+  PurchasesClient,
+  type PurchasesContext,
+  type RecordPurchaseInput,
+  type RestorePurchasesInput,
+} from "./purchases.ts";
 export {
   RealtimeClient,
   type RealtimeClientOptions,

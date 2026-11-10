@@ -124,6 +124,8 @@ export interface RequestAuth {
   userToken?: string | undefined;
   /** Sent as `Idempotency-Key`; required by checkout and refunds. */
   idempotencyKey?: string | undefined;
+  /** A device customer's token, sent as `x-customer-token` on purchases routes. */
+  customerToken?: string | undefined;
 }
 
 /** Options for {@link GemicoreHttpClient.request}. */
@@ -131,6 +133,8 @@ interface RequestInitLite {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   auth?: RequestAuth;
+  /** Extra headers; credentials set by the client itself win over a header of the same name. */
+  headers?: Record<string, string>;
   query?: Record<string, string | number | undefined>;
 }
 
@@ -313,11 +317,14 @@ export class GemicoreHttpClient {
   ): Promise<{ body: Record<string, unknown>; status: number }> {
     assertHeaderSafe("user token", init.auth?.userToken);
     assertHeaderSafe("idempotency key", init.auth?.idempotencyKey);
-    const headers: Record<string, string> = { Accept: "application/json" };
+    assertHeaderSafe("customer token", init.auth?.customerToken);
+    for (const [name, value] of Object.entries(init.headers ?? {})) assertHeaderSafe(name, value);
+    const headers: Record<string, string> = { ...init.headers, Accept: "application/json" };
     if (init.body !== undefined) headers["Content-Type"] = "application/json";
     if (this.config.apiKey) headers.Authorization = `Bearer ${this.config.apiKey}`;
     if (this.config.clientIp) headers["X-Gemicore-Client-IP"] = this.config.clientIp;
     if (init.auth?.userToken) headers["x-user-token"] = init.auth.userToken;
+    if (init.auth?.customerToken) headers["x-customer-token"] = init.auth.customerToken;
     if (init.auth?.idempotencyKey) headers["Idempotency-Key"] = init.auth.idempotencyKey;
 
     const url = this.url(path, init.query);

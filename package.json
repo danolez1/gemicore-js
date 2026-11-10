@@ -1,6 +1,6 @@
 {
   "name": "@gemicore/sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official TypeScript SDK for Gemicore: app user auth, checkout, refunds, balances, billing, config and flags, notifications, realtime and webhook signature verification.",
   "keywords": [
     "gemicore",

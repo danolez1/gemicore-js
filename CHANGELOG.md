@@ -2,6 +2,15 @@
 
 All notable changes to `@gemicore/sdk`. The package follows semantic versioning: while the version is below 1.0, a minor bump may change a method or a type.
 
+## 0.2.0 (2026-11-10)
+
+Store purchases. Every route of the purchases API now has a method, and a test keeps it that way.
+
+- `gemicore.purchases` with 21 methods. For your backend, with a secret key: `retrieveCustomer`, `grantEntitlement`, `revokeEntitlement` and `importPurchases`. For a device, with a publishable key and the `customerToken` that `createCustomer` returns: `logIn`, `logOut`, `customerInfo`, `setAttributes`, `setConsumptionConsent`, `products`, `offerings`, `offers`, `recordPurchase`, `restore`, `checkout`, `checkoutIntent`, `introductoryEligibility`, `promotionalOffer`, `customerCenter` and `sendCancelFeedback`.
+- Types for offerings, paywalls (`PaywallConfig` and `PaywallNode`), customer info, entitlements, purchase records, offers, card intents and the Customer Center.
+- `RequestAuth` has a `customerToken` field, sent as `x-customer-token`.
+- The purchases methods were tested against the api with fake App Store and Google Play servers. They have not run against the real stores.
+
 ## 0.1.0 (2026-11-10)
 
 The first version on npm. It had been used from the Gemicore repository only, so the list below is everything in it rather than a diff. Store purchases (App Store, Google Play and card) are not in this version; they arrive in 0.2.0.
