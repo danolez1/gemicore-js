@@ -10,7 +10,7 @@ export type FeatureFlags = Record<string, boolean>;
 export class ConfigClient {
   constructor(private readonly http: GemicoreHttpClient) {}
 
-  /** Every config value of the app, keyed by name. Secret key only. */
+  /** Every config value of the app, keyed by name; needs a secret key. */
   get(): Promise<AppConfig> {
     return this.http.request("/v1/config", { method: "GET" });
   }

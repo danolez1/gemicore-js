@@ -296,7 +296,7 @@ function numericClaim(claims: Record<string, unknown>, name: string): number | u
 
 /**
  * Checks a Gemicore access token without calling Gemicore: the ES256 signature against the published keys,
- * `typ`, `iss`, `aud`, `exp` and `nbf`. Throws {@link AccessTokenError} when it is not good.
+ * `typ`, `iss`, `aud`, `exp` and `nbf`. Throws {@link AccessTokenError} when the token fails a check.
  *
  * This cannot see a session that was revoked after the token was issued; Gemicore's own routes check that.
  */

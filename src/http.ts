@@ -44,6 +44,9 @@ export const GemicoreErrorCode = {
   PROMO_CODE_INVALID: "PROMO_CODE_INVALID",
   PROMO_CODE_EXPIRED: "PROMO_CODE_EXPIRED",
   PROMO_CODE_EXHAUSTED: "PROMO_CODE_EXHAUSTED",
+  PRICE_UNAVAILABLE: "PRICE_UNAVAILABLE",
+  AUTO_RENEW_UNAVAILABLE: "AUTO_RENEW_UNAVAILABLE",
+  PLAN_CHANGE_NOT_ALLOWED: "PLAN_CHANGE_NOT_ALLOWED",
   NOTIFICATIONS_PUSH_DISABLED: "NOTIFICATIONS_PUSH_DISABLED",
   NOTIFICATION_RECIPIENT_UNKNOWN: "NOTIFICATION_RECIPIENT_UNKNOWN",
   MAIL_NOT_CONFIGURED: "MAIL_NOT_CONFIGURED",
@@ -104,7 +107,7 @@ export class GemicoreApiError extends Error {
 
 /**
  * True for a `GemicoreApiError` from any copy of this package. Use it when an app can load
- * both the ESM and the CommonJS build, because each build has its own class and `instanceof` fails across them.
+ * both the ESM and the CommonJS build, because each build has its own class and `instanceof` will fail across them.
  */
 export function isGemicoreApiError(error: unknown): error is GemicoreApiError {
   if (error instanceof GemicoreApiError) return true;

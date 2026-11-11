@@ -417,7 +417,7 @@ export class PurchasesClient {
     return this.http.request(`/v1/purchases/customers/${encode(customerId)}`, { method: "GET" });
   }
 
-  /** Gives a customer an entitlement without a purchase, for a promotion or a support case. Needs a secret key. */
+  /** Gives a customer an entitlement without a purchase, for a promotion or a support case; needs a secret key. */
   grantEntitlement(
     customerId: string,
     input: GrantEntitlementInput,
@@ -428,7 +428,7 @@ export class PurchasesClient {
     });
   }
 
-  /** Takes back a granted entitlement. Access the customer holds through a purchase stays. Needs a secret key. */
+  /** Takes back a granted entitlement and needs a secret key. Access the customer holds through a purchase stays. */
   revokeEntitlement(customerId: string, entitlement: string): Promise<PurchaseCustomerInfo> {
     return this.http.request(
       `/v1/purchases/customers/${encode(customerId)}/grants/${encode(entitlement)}`,
@@ -436,12 +436,12 @@ export class PurchasesClient {
     );
   }
 
-  /** Imports purchases made before Gemicore, up to 100 per call, from App Store transactions or receipts and Play purchase tokens. Needs a secret key. */
+  /** Imports purchases made before Gemicore, up to 100 per call, from App Store transactions or receipts and Play purchase tokens; needs a secret key. */
   importPurchases(items: PurchaseImportItem[]): Promise<PurchaseImportResult> {
     return this.http.request("/v1/purchases/import", { method: "POST", body: { items } });
   }
 
-  /** Starts an anonymous customer for a device and returns its `token`, which is shown once. */
+  /** Starts an anonymous customer for a device and returns its `token`. The token is shown only once. */
   createCustomer(options: CreateCustomerOptions = {}): Promise<PurchaseCustomerSession> {
     const { context, ...body } = options;
     return this.http.request("/v1/purchases/customers", {
@@ -451,7 +451,7 @@ export class PurchasesClient {
     });
   }
 
-  /** Attaches the device's customer to your user. An anonymous customer keeps its purchases, and a second device of the same user merges into it. */
+  /** Attaches the device's customer to your user. The purchases of an anonymous customer are kept, and a second device of the same user is merged into it. */
   logIn(customerToken: string, options: LogInOptions = {}): Promise<PurchaseCustomerSession> {
     const { userToken, ...body } = options;
     return this.http.request("/v1/purchases/customers/login", {
@@ -461,7 +461,7 @@ export class PurchasesClient {
     });
   }
 
-  /** Ends the device's customer and starts a new anonymous one; the old token stops working. */
+  /** Ends the device's customer and starts a new anonymous one; the old token is invalidated. */
   logOut(customerToken: string): Promise<PurchaseCustomerSession> {
     return this.http.request("/v1/purchases/customers/logout", {
       method: "POST",
@@ -474,7 +474,7 @@ export class PurchasesClient {
     return this.http.request("/v1/purchases/customer", { method: "GET", auth: { customerToken } });
   }
 
-  /** Sets attributes that placement rules can match on; a `null` value deletes its key. Up to 200 keys. */
+  /** Sets attributes that placement rules can match on; a `null` value deletes its key, and 200 keys is the limit. */
   setAttributes(
     customerToken: string,
     attributes: Record<string, string | null>,
@@ -534,7 +534,7 @@ export class PurchasesClient {
     });
   }
 
-  /** Reports what a store restore returned. A purchase held by another customer of the app moves to this one. */
+  /** Reports what a store restore returned. A purchase held by another customer of the app is reassigned to this one. */
   restore(customerToken: string, input: RestorePurchasesInput): Promise<PurchaseRestoreResult> {
     return this.http.request("/v1/purchases/restore", {
       method: "POST",
@@ -561,7 +561,7 @@ export class PurchasesClient {
     });
   }
 
-  /** Signs whether this customer may use the introductory offer of an App Store product. */
+  /** Gives a signed answer on whether this customer may use the introductory offer of an App Store product. */
   introductoryEligibility(
     customerToken: string,
     input: IntroEligibilityInput,
@@ -573,7 +573,7 @@ export class PurchasesClient {
     });
   }
 
-  /** Signs an App Store promotional or win-back offer so the device can apply it in StoreKit. */
+  /** Returns the signature the device needs to apply an App Store promotional or win-back offer in StoreKit. */
   promotionalOffer(
     customerToken: string,
     input: PromotionalOfferInput,

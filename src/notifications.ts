@@ -96,7 +96,7 @@ export interface NotificationPreference {
 export class NotificationsClient {
   constructor(private readonly http: GemicoreHttpClient) {}
 
-  /** Secret key only. Stores inbox rows, tells open tabs over realtime and queues the pushes. */
+  /** Stores inbox rows, tells open tabs over realtime and queues the pushes; needs a secret key. */
   send(input: SendNotificationInput): Promise<{ data: SentNotification[] }> {
     return this.http.request("/v1/notifications", { method: "POST", body: input });
   }

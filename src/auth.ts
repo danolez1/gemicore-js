@@ -1,6 +1,13 @@
 import { GemicoreConfigError, type GemicoreHttpClient } from "./http.ts";
 import { OIDC_PKCE_VALUE, type OidcProvider, type OidcStartOptions } from "./oidc.ts";
-import type { AppUser, Credentials, MfaChallenge, SignupConsent, TokenResponse } from "./types.ts";
+import type {
+  AppUser,
+  Credentials,
+  ExternalUser,
+  MfaChallenge,
+  SignupConsent,
+  TokenResponse,
+} from "./types.ts";
 
 // The start route's own pattern, so a bad key fails here and never becomes a path segment.
 const PROVIDER_KEY = /^[a-z0-9][a-z0-9-]{0,39}$/;
@@ -40,7 +47,7 @@ export class AuthClient {
     });
   }
 
-  /** Mails a sign-in link. Answers `{ sent: true }` whether or not the address has an account. */
+  /** Mails a sign-in link. Answers `{ sent: true }` for an address with an account and for one without. */
   sendMagicLink(email: string): Promise<{ sent: true }> {
     return this.http.request("/v1/auth/magic-link", { method: "POST", body: { email } });
   }
@@ -50,7 +57,7 @@ export class AuthClient {
     return this.http.request("/v1/auth/magic-link/verify", { method: "POST", body: { token } });
   }
 
-  /** Always resolves the same way, so it never reveals whether the email has an account. */
+  /** Resolves the same way for an email with an account and one without. */
   forgotPassword(email: string): Promise<{ sent: true }> {
     return this.http.request("/v1/auth/password/forgot", { method: "POST", body: { email } });
   }
@@ -79,7 +86,7 @@ export class AuthClient {
     });
   }
 
-  /** Trades a refresh token for a new pair. Using a retired token again after 10 seconds is `AUTH_REFRESH_REUSED` and ends the session. */
+  /** Trades a refresh token for a new pair. Using a retired token again after 10 seconds is `AUTH_REFRESH_REUSED` and will end the session. */
   refresh(refreshToken: string): Promise<TokenResponse> {
     return this.http.request("/v1/auth/refresh", { method: "POST", body: { refreshToken } });
   }
@@ -116,7 +123,7 @@ export class AuthClient {
     });
   }
 
-  /** Replaces the backup codes after a current TOTP code, and returns the new set. The old codes stop working. */
+  /** Replaces the backup codes after a current TOTP code, and returns the new set. The old codes are invalidated. */
   regenerateBackupCodes(userToken: string, code: string): Promise<{ backupCodes: string[] }> {
     return this.http.request("/v1/auth/totp/backup-codes", {
       method: "POST",
@@ -140,8 +147,8 @@ export class AuthClient {
   }
 
   /**
-   * The URL to send the browser to (a full page navigation, not `fetch`) to sign in through
-   * `provider`. Builds the URL only; needs a publishable key, since the key rides in the query.
+   * The URL to send the browser to (a full page navigation; a `fetch` call cannot do it) to sign in
+   * through `provider`. Builds the URL only and needs a publishable key, because the key is in the query.
    */
   oidcStartUrl(provider: string, options: OidcStartOptions): string {
     const key = this.http.publishableKey();
@@ -175,7 +182,7 @@ export class AuthClient {
   /**
    * Trades the single-use `gemicore_code` from the redirect (valid 60 seconds) and the verifier whose
    * challenge started the sign-in for a session, or an {@link MfaChallenge} when the user has TOTP
-   * on, like {@link AuthClient.login}. A wrong verifier spends the code.
+   * on, like {@link AuthClient.login}. The code is spent once a wrong verifier is tried.
    */
   async oidcExchange(code: string, codeVerifier: string): Promise<TokenResponse | MfaChallenge> {
     if (!codeVerifier || !OIDC_PKCE_VALUE.test(codeVerifier)) {
@@ -184,6 +191,17 @@ export class AuthClient {
     return this.http.request("/v1/auth/oidc/exchange", {
       method: "POST",
       body: { code, code_verifier: codeVerifier },
+    });
+  }
+
+  /**
+   * Server-side only: needs a secret key. Creates the user for your own `externalId`, or returns the one already there, with no
+   * password and no mail, so it can be subscribed without signing in. `AUTH_EMAIL_TAKEN` (409) when the email belongs to a user with another external id.
+   */
+  upsertUser(externalId: string, input: { email: string }): Promise<ExternalUser> {
+    return this.http.request(`/v1/auth/users/external/${encodeURIComponent(externalId)}`, {
+      method: "PUT",
+      body: input,
     });
   }
 

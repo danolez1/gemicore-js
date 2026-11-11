@@ -5,7 +5,7 @@ export interface ReportBounceInput {
   email: string;
   /** Any string unique to this event, such as your provider's event id. A repeat of it changes nothing. */
   eventId: string;
-  /** A hard bounce suppresses the address at once; soft bounces suppress after 3 within 7 days. */
+  /** A hard bounce will suppress the address at once; soft bounces will suppress it after 3 within 7 days. */
   bounceType: "hard" | "soft";
   /** ISO 8601 time the problem happened; defaults to now and is never later than now. */
   occurredAt?: string;
@@ -58,7 +58,7 @@ export interface PreferencesLinkResult {
 export class EmailClient {
   constructor(private readonly http: GemicoreHttpClient) {}
 
-  /** Reports a hard or soft bounce for an address. A hard bounce suppresses it at once; soft bounces suppress on the third within 7 days. Needs a live mode secret key, and filing the same `eventId` again changes nothing. */
+  /** Reports a hard or soft bounce for an address. Gemicore suppresses the address at once after a hard bounce, and after the third soft bounce within 7 days. It needs a live mode secret key, and filing the same `eventId` again changes nothing. */
   reportBounce(input: ReportBounceInput): Promise<DeliveryReportResult> {
     return this.http.request("/v1/email/bounces", {
       method: "POST",
@@ -71,12 +71,12 @@ export class EmailClient {
     return this.http.request("/v1/email/consents", { method: "POST", body: input });
   }
 
-  /** A link to the preference page for one address, for a settings screen in your app. It can only narrow what the person receives, never grant consent. */
+  /** A link to the preference page for one address, for a settings screen in your app. It can narrow what the person receives and cannot grant consent. */
   preferencesLink(input: { email: string }): Promise<PreferencesLinkResult> {
     return this.http.request("/v1/email/preferences-link", { method: "POST", body: input });
   }
 
-  /** Reports a spam complaint, which suppresses the address for broadcasts and marketing mail. Needs a live mode secret key. */
+  /** Reports a spam complaint. Gemicore then suppresses the address for broadcasts and marketing mail. Needs a live mode secret key. */
   reportComplaint(input: ReportComplaintInput): Promise<DeliveryReportResult> {
     return this.http.request("/v1/email/bounces", {
       method: "POST",

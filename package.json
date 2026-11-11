@@ -1,6 +1,6 @@
 {
   "name": "@gemicore/sdk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Official TypeScript SDK for Gemicore: app user auth, checkout, refunds, balances, billing, config and flags, notifications, realtime and webhook signature verification.",
   "keywords": [
     "gemicore",
@@ -56,6 +56,7 @@
   },
   "scripts": {
     "build": "bun scripts/build.ts",
+    "prepublishOnly": "bun run build",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {

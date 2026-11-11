@@ -95,8 +95,8 @@ export class Gemicore {
   }
 
   /**
-   * A client for one end user's request: same key and settings, plus that user's IP, so Gemicore's per-IP
-   * limits count the user and not your server. Build a new one per incoming request.
+   * A client for one end user's request, with the same key and settings plus that user's IP. Gemicore's
+   * per-IP limits then count the user's IP and ignore your server's. Build a new one per incoming request.
    */
   withClientIp(clientIp: string): Gemicore {
     return new Gemicore({ ...this.settings, clientIp });
@@ -113,8 +113,14 @@ export {
   type Entitlements,
   EntitlementsClient,
   type Invoice,
+  type NoticeConfirmed,
+  type NoticeConfirmInput,
   type Plan,
+  type PlanChange,
+  type PlanChangeInput,
   type PlanInterval,
+  type PlanQuote,
+  type PlanQuoteInput,
   PlansClient,
   PromoCodesClient,
   type PromoDiscountType,
@@ -156,6 +162,7 @@ export type {
   RealtimeEventOn,
   RefundEventData,
   SubscriptionEventData,
+  SubscriptionNoticeEventData,
   SubscriptionPlanChangedEventData,
   TypedWebhookEventName,
 } from "./events.ts";
@@ -271,6 +278,7 @@ export {
   type CryptoPayment,
   type CryptoProgress,
   DEFAULT_TIMEOUT_MS,
+  type ExternalUser,
   type GemicoreConfig,
   type HostedPayment,
   type IdempotentOptions,

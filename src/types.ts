@@ -43,6 +43,15 @@ export interface AppUser {
   totpEnabled: boolean;
 }
 
+/** `PUT /v1/auth/users/external/{externalId}`: the billing user for one of your own ids. */
+export interface ExternalUser {
+  id: string;
+  email: string;
+  externalId: string;
+  /** False when the user already existed. */
+  created: boolean;
+}
+
 /** A signed-in session: short-lived access token plus a rotating refresh token. */
 export interface TokenResponse {
   user: AppUser;

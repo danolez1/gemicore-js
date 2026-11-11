@@ -41,6 +41,19 @@ export interface RefundEventData {
 /** `subscription.created`, `renewed`, `reactivated`, `past_due`, `canceled` and `expired`: the subscription as the api returns it. */
 export type SubscriptionEventData = Subscription;
 
+/** `subscription.notice`, only for an app in email-less billing mode: what Gemicore would have mailed, for the app to send. */
+export interface SubscriptionNoticeEventData {
+  kind:
+    | "renewal_reminder"
+    | "payment_failed"
+    | "plan_change_blocked"
+    | "autorenew_notice"
+    | "autocharge_failed";
+  subscription: Subscription;
+  /** The fields the mail would have shown, such as `planName`, `amount`, `renewsAt` and `checkoutUrl`. An `autorenew_notice` also carries `amountMinor`, `currency` and `chargeFrom`. */
+  props: Record<string, unknown>;
+}
+
 /** `subscription.plan_changed`: the subscription on its new plan, plus where it came from. */
 export interface SubscriptionPlanChangedEventData extends Subscription {
   previousPlanId: string;
@@ -96,6 +109,7 @@ export interface GemicoreWebhookEventData {
   "subscription.renewed": SubscriptionEventData;
   "subscription.reactivated": SubscriptionEventData;
   "subscription.plan_changed": SubscriptionPlanChangedEventData;
+  "subscription.notice": SubscriptionNoticeEventData;
   "subscription.past_due": SubscriptionEventData;
   "subscription.canceled": SubscriptionEventData;
   "subscription.expired": SubscriptionEventData;

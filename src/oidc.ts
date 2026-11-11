@@ -54,8 +54,8 @@ export interface OidcPkcePair {
 }
 
 /**
- * The single-use code from the redirect back to your page. Reads `gemicore_code`, then `keel_code`,
- * which Gemicore still appends for a transition. Returns null when the redirect carries neither.
+ * The single-use code from the redirect back to your page. Reads `gemicore_code`, then `keel_code` (Gemicore also appends
+ * `keel_code` during the transition). Returns null when the redirect has neither.
  */
 export function oidcCodeFromUrl(url: string | URL): string | null {
   const params = new URL(url).searchParams;
@@ -76,7 +76,7 @@ export interface OidcRedirectError {
   state: string | null;
 }
 
-/** The refusal on the redirect back to your page, or null when the redirect carries no `error`. */
+/** The refusal on the redirect back to your page, or null when the redirect has no `error`. */
 export function oidcErrorFromUrl(url: string | URL): OidcRedirectError | null {
   const params = new URL(url).searchParams;
   const code = params.get("error");
@@ -93,7 +93,7 @@ function base64url(bytes: Uint8Array): string {
   return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
 }
 
-/** The S256 challenge (base64url SHA-256) of a verifier, with Web Crypto so it runs in browsers and Bun. */
+/** The S256 challenge (base64url SHA-256) of a verifier, with Web Crypto, which means it runs in browsers and Bun. */
 export async function oidcPkceChallenge(codeVerifier: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(codeVerifier));
   return base64url(new Uint8Array(digest));

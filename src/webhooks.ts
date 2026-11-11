@@ -49,6 +49,7 @@ export const GemicoreWebhookEvent = {
   SUBSCRIPTION_RENEWED: "subscription.renewed",
   SUBSCRIPTION_REACTIVATED: "subscription.reactivated",
   SUBSCRIPTION_PLAN_CHANGED: "subscription.plan_changed",
+  SUBSCRIPTION_NOTICE: "subscription.notice",
   SUBSCRIPTION_PAST_DUE: "subscription.past_due",
   SUBSCRIPTION_CANCELED: "subscription.canceled",
   SUBSCRIPTION_EXPIRED: "subscription.expired",
